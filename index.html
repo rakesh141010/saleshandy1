@@ -1,0 +1,139 @@
+<html>
+	<head> 
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+		<title> Telephone Keypad </title> 
+		<style>
+			.button {
+			width: 120px;
+			height: 80px;
+			margin: 4px;
+			font-size: 25px;
+			
+			}
+		</style>
+	</head>	
+	<body>
+		
+		<input id="input" style="width:340px; height:40px; font-size:20px" type="text" disabled> <button id="delete"> delete</button></input>
+		<div>
+			<button id="0" class="button">1 <br/> .,! </button>
+			<button id ="1" class="button">2 <br/> abc </button>
+			<button id ="2" class="button">3 <br/> def</button>
+			<br/>
+			<button id ="3" class="button">4 <br/> ghi</button>
+			<button id ="4" class="button">5 <br/> jkl</button>
+			<button id ="5" class="button">6 <br/> mno</button>
+			<br/>
+			<button id ="6" class="button">7 <br/> pqrs</button>
+			<button id ="7" class="button">8 <br/> tuv</button>
+			<button id ="8" class="button">9 <br/> wxyz</button>
+			<br/>
+			<button id ="9" class="button">* </button>
+			<button id ="10" class="button">0 </button>
+			<button id ="11" class="button"># </button>
+		</div>
+		
+	</body>
+</html>
+<script type="text/javascript" language="javascript">
+	/* Two arrays is created. One to store number on keypad. 
+		and another arrays is used to store letter & special chracter*/
+	numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"]; 
+	
+	letter = [
+	".,!",
+	"abc",
+	"def",
+	"ghi",
+	"jkl",
+	"mno",
+	"pqrs",
+	"tuv",
+	"wxyz"
+	];
+	
+	/* Variable id store current clicked button
+		variable id2 store last clicked button so as to change character on every key press.
+		variable j indicate whether number is selcted by long press or not.
+		variable k indicate whether last clicked button is same as current clicked button or not.
+		
+	*/
+	var id, id2, i, j, k, input;
+	$(".button").mousedown(function() {
+		id = $(this).attr("id");
+		/* if cuurent clicked button has id more than 8 i.e. (*, 0, #) was clicked then simply input the charcater.
+			otherwise check if last clicked button was same as current one and if current click is long press then input number.*/
+		if(id <= 8)
+		{
+			j = 0; 
+			k = 0;
+			if(id == id2)
+			{
+				k = 1;
+			}
+			clearTimeout(this.downTimer);
+			this.downTimer = window.setTimeout(function() {
+				input = $("#input").val() + numbers[id];
+				$("#input").val(input);
+				j = 1;
+			}, 500);
+			
+		}
+		else {
+			input = $("#input").val() + numbers[id];
+			$("#input").val(input);
+		}
+		
+		
+	}).mouseup(function() {
+	    clearTimeout(this.downTimer);
+		if(id <= 8)
+		{
+			if(j==1)
+			{
+				j = 0;
+			} 
+			else if(k==1)
+			{
+				/* since k = 1, last clicked button is same as current one, so character is changed to next one.*/
+				input = $("#input").val();
+				input = input.substring(0, input.length-1);
+				if(++i >= letter[id].length)
+				{
+					i = 0;
+				}
+				input = input + letter[id][i];
+				
+				$("#input").val(input);
+				
+				clearTimeout(this.dTimer);
+				this.dTimer = window.setTimeout(function() {
+					id2 = null;
+				}, 500);
+			}
+			else {
+				input = $("#input").val() + letter[id][0];
+				$("#input").val(input);
+				
+				i = 0;
+				id2 = id;
+				clearTimeout(this.dTimer);
+				this.dTimer = window.setTimeout(function() {
+					id2 = null;
+				}, 500);
+				
+			}
+			
+		}
+		
+	});
+	
+	/* on clicking delete button rightmost character is deleted */
+	$("#delete").click(function() {
+		input = $("#input").val();
+		input = input.substring(0, input.length-1);
+		$("#input").val(input);
+	});
+	
+	
+</script>
